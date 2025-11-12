@@ -8,7 +8,8 @@
 </head>
 <body>
     <div>
-        <form method="post" action="@if(isset($mahasiswa))
+        <form method="post" action="{{ route('mahasiswa.store') }}">
+            @csrf)
             {{ route('mahasiswa.update', ['id' => $mahasiswa['id']]) }}
         @else
             {{ route('mahasiswa.create') }}
@@ -65,7 +66,7 @@
                     <td colspan=5><input type="text" name="angkatan" size="55" value="{{ $mahasiswa['angkatan'] ?? ''}}"></td>
                 </tr>
                 <tr>
-                    <td colspan="3" align="center"><input type="submit" value="Create"></td>
+                    <td colspan="3" align="center"><input type="submit" value="Simpan"></td>
                     <td colspan="3" align="center"><input type="reset" value="Batal"></td>
                 </tr>
             </table>

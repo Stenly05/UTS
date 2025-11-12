@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Matakuliah;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class MataKuliahController extends Controller
 {
@@ -22,7 +21,8 @@ class MataKuliahController extends Controller
      */
     public function create()
     {
-        return view('CreateMataKuliah');
+        $mk = new Matakuliah();
+        return view('CreateMataKuliah', compact('mk'));
     }
 
     /**
@@ -35,13 +35,9 @@ class MataKuliahController extends Controller
             'nama_matakuliah' => 'required',
         ]);
 
-        $mk = new Matakuliah();
-        $mk->id = Str::uuid();
-        $mk->kode = $request->kode;
-        $mk->nama_matakuliah = $request->nama_matakuliah;
-        $mk->save();
+        Matakuliah::create($request->only('kode', 'nama_matakuliah'));
 
-        return redirect('/matakuliah')->with('success', 'Mata kuliah berhasil ditambahkan.');
+        return redirect()->route('matakuliah.index')->with('success', 'Mata kuliah berhasil ditambahkan.');
     }
 
     /**
@@ -57,7 +53,8 @@ class MataKuliahController extends Controller
      */
     public function edit(Matakuliah $matakuliah)
     {
-        return view('EditMataKuliah', ['mk' => $matakuliah]);
+        $mk = $matakuliah;
+        return view('CreateMataKuliah', compact('mk'));
     }
 
     /**
@@ -65,12 +62,15 @@ class MataKuliahController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $mk = Matakuliah::findOrFail($id);
-        $mk->kode = $request->kode;
-        $mk->nama_matakuliah = $request->nama_matakuliah;
-        $mk->save();
+        $request->validate([
+            'kode' => 'required|unique:matakuliah,kode,' . $id,
+            'nama_matakuliah' => 'required',
+        ]);
 
-        return redirect('/matakuliah')->with('success', 'Mata kuliah berhasil diperbarui.');
+        $mk = Matakuliah::findOrFail($id);
+        $mk->update($request->only('kode', 'nama_matakuliah'));
+
+        return redirect()->route('matakuliah.index')->with('success', 'Mata kuliah berhasil diperbarui.');
     }
 
     /**
@@ -79,6 +79,6 @@ class MataKuliahController extends Controller
     public function destroy(string $id)
     {
         Matakuliah::destroy($id);
-        return redirect('/matakuliah')->with('success', 'Mata kuliah berhasil dihapus.');
+        return redirect()->route('matakuliah.index')->with('success', 'Mata kuliah berhasil dihapus.');
     }
 }

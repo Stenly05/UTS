@@ -15,7 +15,10 @@ return new class extends Migration
             $table->uuid('id');
             $table->string('NIM')->unique();
             $table->string('name');
+            $table->string('tempat_lahir')->nullable();
+            $table->string('tanggal_lahir')->nullable();
             $table->enum('jurusan', ['Bisnis Digital', 'Sistem dan Teknologi Informasi', 'Kewirausahaan']);
+            $table->string('angkatan')->nullable();
             $table->timestamps();
         });
     }
